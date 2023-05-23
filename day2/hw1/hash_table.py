@@ -52,7 +52,6 @@ class HashTable:
         self.buckets = [None] * self.bucket_size
         self.item_count = 0
 
-    # test
     # Put an item to the hash table. If the key already exists, the
     # corresponding value is updated to a new value.
     #
@@ -89,7 +88,6 @@ class HashTable:
                 item = item.next
         print(self.bucket_size)
                 
-
 
     # Get an item from the hash table.
     #
