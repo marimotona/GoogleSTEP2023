@@ -25,6 +25,15 @@ def read_minus(line, index):
     token = {'type': 'MINUS'}
     return token, index + 1
 
+def read_divide(line, index):
+    token = {'type': 'DIVIDE'}
+    return token, index + 1
+
+
+def read_multi(line, index):
+    token = {'type': 'MULTI'}
+    return token, index + 1
+
 
 def tokenize(line):
     tokens = []
@@ -36,23 +45,43 @@ def tokenize(line):
             (token, index) = read_plus(line, index)
         elif line[index] == '-':
             (token, index) = read_minus(line, index)
+        elif line[index] == '*':
+            (token, index) = read_multi(line, index)
+        elif line[index] == '/':
+            (token, index) = read_divide(line, index)
         else:
             print('Invalid character found: ' + line[index])
             exit(1)
         tokens.append(token)
+        # print(tokens)
     return tokens
 
 
 def evaluate(tokens):
-    answer = 0
     tokens.insert(0, {'type': 'PLUS'}) # Insert a dummy '+' token
     index = 1
+    priority_tokens = []
+
     while index < len(tokens):
         if tokens[index]['type'] == 'NUMBER':
-            if tokens[index - 1]['type'] == 'PLUS':
-                answer += tokens[index]['number']
-            elif tokens[index - 1]['type'] == 'MINUS':
-                answer -= tokens[index]['number']
+            if tokens[index - 1]['type'] == 'MULTI':
+                priority_tokens[-1]['number'] *= tokens[index]['number']
+            elif tokens[index - 1]['type'] == 'DIVIDE':
+                priority_tokens[-1]['number'] /= tokens[index]['number']
+            else:
+                priority_tokens.append(tokens[index])
+        else:
+            priority_tokens.append(tokens[index])
+        index += 1   
+
+
+    answer = 0
+    while index < len(tokens):
+        if priority_tokens[index]['type'] == 'NUMBER':
+            if priority_tokens[index - 1]['type'] == 'PLUS':
+                answer += priority_tokens[index]['number']
+            elif priority_tokens[index - 1]['type'] == 'MINUS':
+                answer -= priority_tokens[index]['number']
             else:
                 print('Invalid syntax')
                 exit(1)
@@ -75,6 +104,9 @@ def run_test():
     print("==== Test started! ====")
     test("1+2")
     test("1.0+2.1-3")
+    test("2*2-3")
+    test("4+1-2*5")
+    test("6+2-2*5/2")
     print("==== Test finished! ====\n")
 
 run_test()
