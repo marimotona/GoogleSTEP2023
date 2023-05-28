@@ -64,23 +64,30 @@ def evaluate(tokens):
 
     while index < len(tokens):
         if tokens[index]['type'] == 'NUMBER':
-            if len(priority_tokens) > 0 and tokens[-1]['type'] == 'MULTI':
-                priority_tokens[-1]['number'] *= tokens[index]['number']
-            elif len(priority_tokens) > 0 and tokens[-1]['type'] == 'DIVIDE':
-                priority_tokens[-1]['number'] /= tokens[index]['number']
+            # if len(priority_tokens) > 0 and priority_tokens[-1]['type'] == 'MULTI':
+            #     priority_tokens[-1]['number'] *= tokens[index]['number']
+            # elif len(priority_tokens) > 0 and priority_tokens[-1]['type'] == 'DIVIDE':
+            #     priority_tokens[-1]['number'] /= tokens[index]['number']
+            # else:
+            #     priority_tokens.append(tokens[index])
+            if len(priority_tokens) > 0 and priority_tokens[-1]['type'] in ['MULTI', 'DIVIDE']:
+                operation = priority_tokens.pop()
+                if operation['type'] == 'MULTI':
+                    priority_tokens[-1]['number'] *= tokens[index]['number']
+                else:
+                    priority_tokens[-1]['number'] /= tokens[index]['number']
             else:
                 priority_tokens.append(tokens[index])
         else:
             priority_tokens.append(tokens[index])
-            print(priority_tokens)
         index += 1  
 
+    print(priority_tokens)
 
     answer = 0
-    index = 0
+    index = 1
     while index < len(priority_tokens):
         if priority_tokens[index]['type'] == 'NUMBER':
-            print(priority_tokens)
             if priority_tokens[index - 1]['type'] == 'PLUS':
                 answer += priority_tokens[index]['number']
             elif priority_tokens[index - 1]['type'] == 'MINUS':
