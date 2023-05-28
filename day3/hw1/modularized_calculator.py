@@ -64,9 +64,9 @@ def evaluate(tokens):
     while index < len(tokens):
         if tokens[index]['type'] == 'NUMBER':
             if len(priority_tokens) > 0 and priority_tokens[-1]['type'] in ['MULTI', 'DIVIDE']:
-                operation = priority_tokens.pop()
+                operation = priority_tokens.pop() # 'multi'や'divideの演算子を取り出している
                 if operation['type'] == 'MULTI':
-                    priority_tokens[-1]['number'] *= tokens[index]['number']
+                    priority_tokens[-1]['number'] *= tokens[index]['number'] # priority_tokensの最後の要素と、今の要素を計算する
                 else:
                     priority_tokens[-1]['number'] /= tokens[index]['number']
             else:
