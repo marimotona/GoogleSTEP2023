@@ -73,8 +73,12 @@ def evaluate_expression_brackets(tokens, index):
 
     bracket_tokens = []
     while index < len(tokens) and tokens[index]['type'] != 'RIGHT_BRACKET':
-        bracket_tokens.append(tokens[index])
-        index += 1
+        if tokens[index]['type'] == 'LEFT_BRACKET': # 二重括弧に対応
+            (token, index) = evaluate_expression_brackets(tokens, index)
+            bracket_tokens.append(token)
+        else:
+            bracket_tokens.append(tokens[index])
+            index += 1
 
     result = evaluate(bracket_tokens)
 
