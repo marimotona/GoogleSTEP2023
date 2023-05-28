@@ -53,7 +53,6 @@ def tokenize(line):
             print('Invalid character found: ' + line[index])
             exit(1)
         tokens.append(token)
-        # print(tokens)
     return tokens
 
 
@@ -64,12 +63,6 @@ def evaluate(tokens):
 
     while index < len(tokens):
         if tokens[index]['type'] == 'NUMBER':
-            # if len(priority_tokens) > 0 and priority_tokens[-1]['type'] == 'MULTI':
-            #     priority_tokens[-1]['number'] *= tokens[index]['number']
-            # elif len(priority_tokens) > 0 and priority_tokens[-1]['type'] == 'DIVIDE':
-            #     priority_tokens[-1]['number'] /= tokens[index]['number']
-            # else:
-            #     priority_tokens.append(tokens[index])
             if len(priority_tokens) > 0 and priority_tokens[-1]['type'] in ['MULTI', 'DIVIDE']:
                 operation = priority_tokens.pop()
                 if operation['type'] == 'MULTI':
@@ -85,20 +78,6 @@ def evaluate(tokens):
     print(priority_tokens)
 
     answer = priority_tokens[0]['number']
-    # index = 1
-    # while index < len(priority_tokens):
-    #     if priority_tokens[index]['type'] == 'NUMBER':
-    #         if index != len(priority_tokens) - 1:
-    #             if priority_tokens[index + 1]['type'] == 'PLUS':
-    #                 answer += priority_tokens[index]['number']
-    #             elif priority_tokens[index + 1]['type'] == 'MINUS':
-    #                 answer -= priority_tokens[index]['number']
-    #             else:
-    #                 print('Invalid syntax')
-    #                 exit(1)
-    #         else:
-    #             answer += priority_tokens[index]['number']
-    #     index += 1
     index = 1
     while index < len(priority_tokens):
         if priority_tokens[index]['type'] == 'NUMBER':
