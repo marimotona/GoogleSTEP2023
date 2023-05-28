@@ -42,6 +42,18 @@ def read_right_bracket(line, index):
     token = {'type': 'RIGHT_BRACKET'}
     return token, index + 1
 
+def read_abs(line, index):
+    token = {'type': 'ABS'}
+    return token, index + 1
+
+def read_int(line, index):
+    token = {'type': 'INT'}
+    return token, index + 1
+
+def read_round(line, index):
+    token = {'type': 'ROUND'}
+    return token, index + 1
+
 
 def tokenize(line):
     tokens = []
@@ -61,6 +73,12 @@ def tokenize(line):
             (token, index) = read_left_bracket(line, index)
         elif line[index] == ')':
             (token, index) = read_right_bracket(line, index)
+        elif line[index] == 'abs':
+            (token, index) = read_abs(line, index)
+        elif line[index] == 'int':
+            (token, index) = read_int(line, index)
+        elif line[index] == 'round':
+            (token, index) = read_round(line, index)
         else:
             print('Invalid character found: ' + line[index])
             exit(1)
