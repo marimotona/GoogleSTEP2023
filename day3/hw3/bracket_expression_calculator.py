@@ -34,6 +34,14 @@ def read_multi(line, index):
     token = {'type': 'MULTI'}
     return token, index + 1
 
+def read_left_bracket(line, index):
+    token = {'type': 'LEFT_BRACKET'}
+    return token, index + 1
+
+def read_right_bracket(line, index):
+    token = {'type': 'RIGHT_BRACKET'}
+    return token, index + 1
+
 
 def tokenize(line):
     tokens = []
@@ -49,11 +57,28 @@ def tokenize(line):
             (token, index) = read_multi(line, index)
         elif line[index] == '/':
             (token, index) = read_divide(line, index)
+        elif line[index] == '(':
+            (token, index) = read_left_bracket(line, index)
+        elif line[index] == ')':
+            (token, index) = read_right_bracket(line, index)
         else:
             print('Invalid character found: ' + line[index])
             exit(1)
         tokens.append(token)
     return tokens
+
+
+def evaluate_expression_brackets(tokens, index):
+    index += 1
+
+    bracket_tokens = []
+    while index < len(tokens) and tokens[index]['type'] != 'RIGHT_BRACKET':
+        bracket_tokens.append(tokens[index])
+        index += 1
+
+    result = evaluate(bracket_tokens)
+
+    return {'type': 'NUMBER', 'number': result}, index + 1
 
 
 def evaluate(tokens):
@@ -62,7 +87,18 @@ def evaluate(tokens):
     priority_tokens = []
 
     while index < len(tokens):
-        if tokens[index]['type'] == 'NUMBER':
+        if tokens[index]['type'] == 'LEFT_BRACKET':
+            (token, index) = evaluate_expression_brackets(tokens, index)
+            if len(priority_tokens) > 0 and priority_tokens[-1]['type'] in ['MULTI', 'DIVIDE']:
+                operation = priority_tokens.pop() 
+                if operation['type'] == 'MULTI':
+                    priority_tokens[-1]['number'] *= token['number'] 
+                else:
+                    priority_tokens[-1]['number'] /= token['number']
+            else:
+                priority_tokens.append(token)
+            print(priority_tokens)
+        if index < len(tokens) and tokens[index]['type'] == 'NUMBER':
             if len(priority_tokens) > 0 and priority_tokens[-1]['type'] in ['MULTI', 'DIVIDE']:
                 operation = priority_tokens.pop() # 'multi'や'divideの演算子を取り出している
                 if operation['type'] == 'MULTI':
@@ -71,10 +107,11 @@ def evaluate(tokens):
                     priority_tokens[-1]['number'] /= tokens[index]['number']
             else:
                 priority_tokens.append(tokens[index])
-        else:
+        elif index < len(tokens):
             priority_tokens.append(tokens[index])
         index += 1  
 
+    print(priority_tokens)
 
     answer = priority_tokens[0]['number']
     index = 1
@@ -90,6 +127,7 @@ def evaluate(tokens):
         index += 1
 
     return answer
+
 
 
 def test(line):
