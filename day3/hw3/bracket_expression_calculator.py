@@ -12,6 +12,8 @@ def read_number(line, index):
             number += int(line[index]) * decimal
             decimal /= 10
             index += 1
+    # if index < len(line) and line[index] == 'abs':
+    #     index += 1
     token = {'type': 'NUMBER', 'number': number}
     return token, index
 
@@ -111,6 +113,7 @@ def evaluate(tokens):
     while index < len(tokens):
         if tokens[index]['type'] == 'LEFT_BRACKET':
             (token, index) = evaluate_expression_brackets(tokens, index)
+            # abs int roundの条件分岐
             if len(priority_tokens) > 0 and priority_tokens[-1]['type'] in ['MULTI', 'DIVIDE']:
                 operation = priority_tokens.pop() 
                 if operation['type'] == 'MULTI':
