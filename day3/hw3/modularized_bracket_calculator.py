@@ -12,8 +12,6 @@ def read_number(line, index):
             number += int(line[index]) * decimal
             decimal /= 10
             index += 1
-    # if index < len(line) and line[index] == 'abs':
-    #     index += 1
     token = {'type': 'NUMBER', 'number': number}
     return token, index
 
@@ -87,71 +85,50 @@ def tokenize(line):
         tokens.append(token)
     return tokens
 
+# calculate plus and minus
+def evaluate_plus_minus(tokens):
+    tokens.insert(0, {'type': 'PLUS'}) # Insert a dummy '+' token
+    index = 1
+    answer = 0
+    while index < len(tokens):
+        if tokens[index]['type'] == 'NUMBER':
+            if tokens[index - 1]['type'] == 'PLUS':
+                answer += tokens[index]['number']
+            elif tokens[index - 1]['type'] == 'MINUS':
+                answer -= tokens[index]['number']
+            else:
+                print('Invalid syntax')
+                exit(1)
+        index += 1
+        print(answer)
+    return answer
 
-def evaluate_expression_brackets(tokens, index):
+def evaluate_mul_div(tokens):
+    return answer
+
+
+def evaluate_brackets(tokens, index):
     index += 1
 
     bracket_tokens = []
     while index < len(tokens) and tokens[index]['type'] != 'RIGHT_BRACKET':
         if tokens[index]['type'] == 'LEFT_BRACKET': # 二重括弧に対応
-            (token, index) = evaluate_expression_brackets(tokens, index)
+            (token, index) = evaluate_brackets(tokens, index)
             bracket_tokens.append(token)
         else:
             bracket_tokens.append(tokens[index])
             index += 1
 
-    result = evaluate(bracket_tokens)
+    # result = evaluate(bracket_tokens)
 
     return {'type': 'NUMBER', 'number': result}, index + 1
 
 
 def evaluate(tokens):
-    tokens.insert(0, {'type': 'PLUS'}) # Insert a dummy '+' token
-    index = 1
-    priority_tokens = []
-
-    while index < len(tokens):
-        if tokens[index]['type'] == 'LEFT_BRACKET':
-            (token, index) = evaluate_expression_brackets(tokens, index)
-            # abs int roundの条件分岐
-            if len(priority_tokens) > 0 and priority_tokens[-1]['type'] in ['MULTI', 'DIVIDE']:
-                operation = priority_tokens.pop() 
-                if operation['type'] == 'MULTI':
-                    priority_tokens[-1]['number'] *= token['number'] 
-                else:
-                    priority_tokens[-1]['number'] /= token['number']
-            else:
-                priority_tokens.append(token)
-            print(priority_tokens)
-        if index < len(tokens) and tokens[index]['type'] == 'NUMBER':
-            if len(priority_tokens) > 0 and priority_tokens[-1]['type'] in ['MULTI', 'DIVIDE']:
-                operation = priority_tokens.pop() # 'multi'や'divideの演算子を取り出している
-                if operation['type'] == 'MULTI':
-                    priority_tokens[-1]['number'] *= tokens[index]['number'] # priority_tokensの最後の要素と、今の要素を計算する
-                else:
-                    priority_tokens[-1]['number'] /= tokens[index]['number']
-            else:
-                priority_tokens.append(tokens[index])
-        elif index < len(tokens):
-            priority_tokens.append(tokens[index])
-        index += 1  
-
-    print(priority_tokens)
-
-    answer = priority_tokens[0]['number']
-    index = 1
-    while index < len(priority_tokens):
-        if priority_tokens[index]['type'] == 'NUMBER':
-            if priority_tokens[index - 1]['type'] == 'PLUS':
-                answer += priority_tokens[index]['number']
-            elif priority_tokens[index - 1]['type'] == 'MINUS':
-                answer -= priority_tokens[index]['number']
-            else:
-                print('Invalid syntax')
-                exit(1)
-        index += 1
-
-    return answer
+    # tokens = evaluate_function(tokens)
+    # tokens = evaluate_brackets(tokens)
+    # tokens = evaluate_mul_div(tokens)
+    return evaluate_plus_minus(tokens)
 
 
 
@@ -175,9 +152,10 @@ print(tokens)
 # Add more tests to this function :)
 def run_test():
     print("==== Test started! ====")
-    test("(3+4)-5")
-    test("1*(3+5)-6")
-    test("(3+4*(2-1))/5")
+    test("3+5")
+    # test("(3+4)-5")
+    # test("1*(3+5)-6")
+    # test("(3+4*(2-1))/5")
     print("==== Test finished! ====\n")
 
 run_test()
