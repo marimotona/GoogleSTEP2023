@@ -124,40 +124,6 @@ def evaluate_brackets(tokens):
     index = 0
 
     while index < len(tokens):
-        # if tokens[index]['type'] == 'LEFT_BRACKET': 
-        #     index += 1
-        #     while index < len(tokens) and tokens[index]['type'] != 'RIGHT_BRACKET':
-        #         if tokens[index]['type'] == 'LEFT_BRACKET':
-        #             tokens = evaluate_brackets(tokens)
-        #             bracket_tokens.append(tokens)
-        #         else:
-        #             bracket_tokens.append(tokens[index])
-        #             index += 1
-
-        #     result = evaluate(bracket_tokens)
-        #     tokens[index - len(bracket_tokens) - 1] = {'type': 'NUMBER', 'number': result} 
-
-        #     del tokens[index - len(bracket_tokens):index + 1]
-        #     bracket_tokens = []
-        #     index = 0
-        # else:
-        #     index += 1
-        # token = tokens[index]
-
-        # if tokens[index]['type'] == 'LEFT_BRACKET': 
-        #     index += 1
-        # elif tokens[index]['type'] == 'RIGHT_BRACKET':
-        #     print(bracket_tokens)
-        #     result = evaluate(bracket_tokens)
-        #     tokens[index - len(bracket_tokens) - 1] = {'type': 'NUMBER', 'number': result} 
-        #     del tokens[index - len(bracket_tokens):index + 1]
-
-        #     bracket_tokens = []
-        #     index = 0
-        # else:
-        #     bracket_tokens.append(tokens[index])
-        #     index += 1
-
         if tokens[index]['type'] == 'LEFT_BRACKET':
             count = 0
             for i in range(index, len(tokens)):
@@ -174,10 +140,6 @@ def evaluate_brackets(tokens):
             bracket_tokens.append(tokens[index])
         index += 1
     return bracket_tokens
-
-
-
-    return tokens
 
 
 
