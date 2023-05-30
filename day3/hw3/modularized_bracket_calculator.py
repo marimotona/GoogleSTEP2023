@@ -119,28 +119,72 @@ def evaluate_mul_div(tokens):
     return tokens
 
 
-def evaluate_brackets(tokens, index):
-    index += 1
-
+def evaluate_brackets(tokens):
     bracket_tokens = []
-    while index < len(tokens) and tokens[index]['type'] != 'RIGHT_BRACKET':
-        if tokens[index]['type'] == 'LEFT_BRACKET': # 二重括弧に対応
-            (token, index) = evaluate_brackets(tokens, index)
-            bracket_tokens.append(token)
+    index = 0
+
+    while index < len(tokens):
+        # if tokens[index]['type'] == 'LEFT_BRACKET': 
+        #     index += 1
+        #     while index < len(tokens) and tokens[index]['type'] != 'RIGHT_BRACKET':
+        #         if tokens[index]['type'] == 'LEFT_BRACKET':
+        #             tokens = evaluate_brackets(tokens)
+        #             bracket_tokens.append(tokens)
+        #         else:
+        #             bracket_tokens.append(tokens[index])
+        #             index += 1
+
+        #     result = evaluate(bracket_tokens)
+        #     tokens[index - len(bracket_tokens) - 1] = {'type': 'NUMBER', 'number': result} 
+
+        #     del tokens[index - len(bracket_tokens):index + 1]
+        #     bracket_tokens = []
+        #     index = 0
+        # else:
+        #     index += 1
+        # token = tokens[index]
+
+        # if tokens[index]['type'] == 'LEFT_BRACKET': 
+        #     index += 1
+        # elif tokens[index]['type'] == 'RIGHT_BRACKET':
+        #     print(bracket_tokens)
+        #     result = evaluate(bracket_tokens)
+        #     tokens[index - len(bracket_tokens) - 1] = {'type': 'NUMBER', 'number': result} 
+        #     del tokens[index - len(bracket_tokens):index + 1]
+
+        #     bracket_tokens = []
+        #     index = 0
+        # else:
+        #     bracket_tokens.append(tokens[index])
+        #     index += 1
+
+        if tokens[index]['type'] == 'LEFT_BRACKET':
+            count = 0
+            for i in range(index, len(tokens)):
+                if tokens[i]['type'] == 'LEFT_BRACKET':
+                    count += 1
+                elif tokens[i]['type'] == 'RIGHT_BRACKET':
+                    count -= 1
+                    if count == 0:
+                        result = evaluate(tokens[index + 1:i])
+                        bracket_tokens.append({'type': 'NUMBER', 'number': result})
+                        index = i  # skip the content inside the brackets
+                        break
         else:
             bracket_tokens.append(tokens[index])
-            index += 1
+        index += 1
+    return bracket_tokens
 
-    # result = evaluate(bracket_tokens)
 
-    return {'type': 'NUMBER', 'number': result}, index + 1
+
+    return tokens
+
 
 
 def evaluate(tokens):
     # tokens = evaluate_function(tokens)
-    # tokens = evaluate_brackets(tokens)
+    tokens = evaluate_brackets(tokens)
     tokens = evaluate_mul_div(tokens)
-    # return evaluate_mul_div(tokens)
     return evaluate_plus_minus(tokens)
 
 
@@ -165,10 +209,10 @@ print(tokens)
 # Add more tests to this function :)
 def run_test():
     print("==== Test started! ====")
-    test("3+5")
-    test("3*5+6")
-    test("3*5/6-3*6/8+9+10-6*5")
+    # test("3+5")
+    # test("3*5+6")
     # test("(3+4)-5")
+    test("((3+4)-5)+8")
     # test("1*(3+5)-6")
     # test("(3+4*(2-1))/5")
     print("==== Test finished! ====\n")
