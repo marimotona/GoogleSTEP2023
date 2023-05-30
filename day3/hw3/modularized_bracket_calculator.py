@@ -100,11 +100,23 @@ def evaluate_plus_minus(tokens):
                 print('Invalid syntax')
                 exit(1)
         index += 1
-        print(answer)
     return answer
 
 def evaluate_mul_div(tokens):
-    return answer
+    index = 1
+    while index < len(tokens) - 1:
+        if tokens[index]['type'] in ['MULTI', 'DIVIDE']:
+            if tokens[index + 1]['type'] == 'NUMBER':
+                if tokens[index]['type'] == 'MULTI':
+                    tokens[index - 1]['number'] *= tokens[index + 1]['number']
+                elif tokens[index]['type'] == 'DIVIDE':
+                    tokens[index - 1]['number'] /= tokens[index + 1]['number']
+                del tokens[index:index + 2]  # deletes the operation and the next number
+            else:
+                index += 1
+        else:
+            index += 1
+    return tokens
 
 
 def evaluate_brackets(tokens, index):
@@ -127,7 +139,8 @@ def evaluate_brackets(tokens, index):
 def evaluate(tokens):
     # tokens = evaluate_function(tokens)
     # tokens = evaluate_brackets(tokens)
-    # tokens = evaluate_mul_div(tokens)
+    tokens = evaluate_mul_div(tokens)
+    # return evaluate_mul_div(tokens)
     return evaluate_plus_minus(tokens)
 
 
@@ -153,6 +166,8 @@ print(tokens)
 def run_test():
     print("==== Test started! ====")
     test("3+5")
+    test("3*5+6")
+    test("3*5/6-3*6/8+9+10-6*5")
     # test("(3+4)-5")
     # test("1*(3+5)-6")
     # test("(3+4*(2-1))/5")
