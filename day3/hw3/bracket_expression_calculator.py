@@ -164,6 +164,13 @@ def test(line):
     else:
         print("FAIL! (%s should be %f but was %f)" % (line, expected_answer, actual_answer))
 
+tokens = [1, 2, 3, 4, 5]
+
+print(tokens[2:4])
+
+del tokens[2:4]
+
+print(tokens)
 
 # Add more tests to this function :)
 def run_test():
