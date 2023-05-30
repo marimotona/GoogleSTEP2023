@@ -102,6 +102,7 @@ def evaluate_plus_minus(tokens):
         index += 1
     return answer
 
+# calculate multi and divide
 def evaluate_mul_div(tokens):
     index = 1
     while index < len(tokens) - 1:
@@ -119,6 +120,7 @@ def evaluate_mul_div(tokens):
     return tokens
 
 
+# calculate brackets
 def evaluate_brackets(tokens):
     bracket_tokens = []
     index = 0
@@ -175,8 +177,8 @@ def run_test():
     test("3*5+6")
     test("(3+4)-5")
     test("((3+4)-5)+8")
-    # test("1*(3+5)-6")
-    # test("(3+4*(2-1))/5")
+    test("1*(3+5)-6")
+    test("(3+4*(2-1))/5")
     print("==== Test finished! ====\n")
 
 run_test()
