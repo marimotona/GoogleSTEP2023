@@ -111,7 +111,7 @@ def evaluate_mul_div(tokens):
                     tokens[index - 1]['number'] *= tokens[index + 1]['number']
                 elif tokens[index]['type'] == 'DIVIDE':
                     tokens[index - 1]['number'] /= tokens[index + 1]['number']
-                del tokens[index:index + 2]  # deletes the operation and the next number
+                del tokens[index:index + 2] 
             else:
                 index += 1
         else:
@@ -125,16 +125,16 @@ def evaluate_brackets(tokens):
 
     while index < len(tokens):
         if tokens[index]['type'] == 'LEFT_BRACKET':
-            count = 0
+            count_brackts = 0
             for i in range(index, len(tokens)):
                 if tokens[i]['type'] == 'LEFT_BRACKET':
-                    count += 1
+                    count_brackts += 1
                 elif tokens[i]['type'] == 'RIGHT_BRACKET':
-                    count -= 1
-                    if count == 0:
+                    count_brackts -= 1
+                    if count_brackts == 0:
                         result = evaluate(tokens[index + 1:i])
                         bracket_tokens.append({'type': 'NUMBER', 'number': result})
-                        index = i  # skip the content inside the brackets
+                        index = i 
                         break
         else:
             bracket_tokens.append(tokens[index])
@@ -171,9 +171,9 @@ print(tokens)
 # Add more tests to this function :)
 def run_test():
     print("==== Test started! ====")
-    # test("3+5")
-    # test("3*5+6")
-    # test("(3+4)-5")
+    test("3+5")
+    test("3*5+6")
+    test("(3+4)-5")
     test("((3+4)-5)+8")
     # test("1*(3+5)-6")
     # test("(3+4*(2-1))/5")
