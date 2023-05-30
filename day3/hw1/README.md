@@ -1,3 +1,5 @@
+#### トークン化
+文字列から演算子を取り出しトークン化
 ```
 def read_divide(line, index):
     token = {'type': 'DIVIDE'}
@@ -8,7 +10,9 @@ def read_multi(line, index):
     token = {'type': 'MULTI'}
     return token, index + 1
 ```
-文字列から演算子を取り出しトークン化
+
+#### トークンデータの出力
+入力された文字列を解析し、それぞれが、数値や演算子の情報を持つ、トークンデータのリストとして出力する
 
 ```
 def tokenize(line):
@@ -32,4 +36,3 @@ def tokenize(line):
     return tokens
 ```
 
-入力された文字列を解析し、それぞれが、数値や演算子の情報を持つ、トークンデータのリストとして出力する
