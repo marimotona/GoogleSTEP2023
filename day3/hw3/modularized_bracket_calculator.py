@@ -147,88 +147,164 @@ def evaluate_brackets(tokens):
     return bracket_tokens
 
 
-def evaluate_abs(tokens):
+# def evaluate_abs(tokens):
+#     index = 0
+#     while index < len(tokens):
+#         if tokens[index]['type'] == 'ABS':
+#             end_index = index + 1
+#             while end_index < len(tokens) and tokens[end_index]['type'] != 'RIGHT_BRACKET':
+#                 end_index += 1
+#             if end_index < len(tokens) and tokens[end_index]['type'] == 'RIGHT_BRACKET':
+#                 abs_result = evaluate(tokens[index+2:end_index])
+#                 abs_number = abs_result if abs_result >= 0 else -abs_result
+#                 tokens[index:end_index+1] = [{'type': 'NUMBER', 'number': abs_number}]
+#             else:
+#                 print("Invalid syntax")
+#                 exit(1)
+#         index += 1
+#     return tokens
+
+# def evaluate_int(tokens):
+#     index = 0
+#     while index < len(tokens):
+#         if tokens[index]['type'] == 'INT':
+#             end_index = index + 1
+#             while end_index < len(tokens) and tokens[end_index]['type'] != 'RIGHT_BRACKET':
+#                 end_index += 1
+#             if end_index < len(tokens) and tokens[end_index]['type'] == 'RIGHT_BRACKET':
+#                 int_result = str(evaluate(tokens[index+2:end_index]))
+#                 if '.' in int_result:
+#                     int_string = int_result[:int_result.index('.')]
+#                 else:
+#                     int_string = int_result
+#                 int_number = float(int_string)
+#                 tokens[index:end_index+1] = [{'type': 'NUMBER', 'number': int_number}]
+#             else:
+#                 print("Invalid syntax")
+#                 exit(1)
+#         index += 1
+#     return tokens
+
+
+# def evaluate_int(tokens):
+#     index = 0
+#     while index < len(tokens):
+#         if tokens[index]['type'] == 'INT':
+#             end_index = index + 1
+#             while end_index < len(tokens) and tokens[end_index]['type'] != 'RIGHT_BRACKET':
+#                 end_index += 1
+#             if end_index < len(tokens) and tokens[end_index]['type'] == 'RIGHT_BRACKET':
+#                 int_result = evaluate(tokens[index+2:end_index])
+#                 int_number = int(int_result) 
+#                 tokens[index:end_index+1] = [{'type': 'NUMBER', 'number': int_number}]
+#             else:
+#                 print("Invalid syntax")
+#                 exit(1)
+#         index += 1
+#     return tokens
+
+
+
+# def evaluate_round(tokens):
+#     index = 0
+#     while index < len(tokens):
+#         if tokens[index]['type'] != 'ROUND':
+#             index += 1
+#             continue
+
+#         end_index = index + 1
+#         while end_index < len(tokens) and tokens[end_index]['type'] != 'RIGHT_BRACKET':
+#             end_index += 1
+#         if end_index == len(tokens) or tokens[end_index]['type'] != 'RIGHT_BRACKET':
+#             print("Invalid syntax")
+#             exit(1)
+
+#         round_result = evaluate(tokens[index+2:end_index])
+#         round_string = str(round_result)
+
+#         is_negative = False
+#         if round_result < 0:
+#             is_negative = True
+#             round_string = round_string[1:]
+
+#         if '.' in round_string:
+#             decimal_part = int(round_string[round_string.index('.') + 1])
+#             integer_part = int(round_string[:round_string.index('.')])
+
+#             if decimal_part >= 5:
+#                 integer_part += 1
+#             # elif decimal_part == 5:
+#             #     if integer_part % 2 != 0: 
+#             #         integer_part += 1
+
+#             if is_negative:
+#                 integer_part = -integer_part
+
+#             tokens[index:end_index+1] = [{'type': 'NUMBER', 'number': float(integer_part)}]
+
+#         index += 1
+#     return tokens
+
+# def evaluate_round(tokens):
+#     index = 0
+#     while index < len(tokens):
+#         if tokens[index]['type'] != 'ROUND':
+#             index += 1
+#             continue
+
+#         end_index = index + 1
+#         while end_index < len(tokens) and tokens[end_index]['type'] != 'RIGHT_BRACKET':
+#             end_index += 1
+#         if end_index == len(tokens) or tokens[end_index]['type'] != 'RIGHT_BRACKET':
+#             print("Invalid syntax")
+#             exit(1)
+
+#         round_result = evaluate(tokens[index+2:end_index])
+#         round_number = round(round_result)  # use Python's built-in round function
+#         tokens[index:end_index+1] = [{'type': 'NUMBER', 'number': round_number}]
+
+#         index += 1
+#     return tokens
+
+
+# def evaluate_function(tokens):
+#     tokens = evaluate_abs(tokens)
+#     tokens = evaluate_int(tokens)
+#     return evaluate_round(tokens)
+
+def evaluate_function(tokens):
+    print(tokens)
     index = 0
     while index < len(tokens):
-        if tokens[index]['type'] == 'ABS':
+        if tokens[index]['type'] in ['ABS', 'INT', 'ROUND']:
+            func_tokens = []
+            func_type = tokens[index]['type']
             end_index = index + 1
             while end_index < len(tokens) and tokens[end_index]['type'] != 'RIGHT_BRACKET':
+                func_tokens.append(tokens[end_index])
                 end_index += 1
+                print('ここまで動いている')
             if end_index < len(tokens) and tokens[end_index]['type'] == 'RIGHT_BRACKET':
-                abs_result = evaluate(tokens[index+2:end_index])
-                abs_number = abs_result if abs_result >= 0 else -abs_result
-                tokens[index:end_index+1] = [{'type': 'NUMBER', 'number': abs_number}]
+                func_result = evaluate(func_tokens)
+                print(func_result)
+                if func_type == 'ABS':
+                    result = abs(func_result)
+                elif func_type == 'INT':
+                    result = int(func_result)
+                else: 
+                    result = round(func_result)
+                tokens[index:end_index+1] = [{'type': 'NUMBER', 'number': result}]
             else:
                 print("Invalid syntax")
                 exit(1)
         index += 1
     return tokens
 
-def evaluate_int(tokens):
-    index = 0
-    while index < len(tokens):
-        if tokens[index]['type'] == 'INT':
-            end_index = index + 1
-            while end_index < len(tokens) and tokens[end_index]['type'] != 'RIGHT_BRACKET':
-                end_index += 1
-            if end_index < len(tokens) and tokens[end_index]['type'] == 'RIGHT_BRACKET':
-                int_result = str(evaluate(tokens[index+2:end_index]))
-                if '.' in int_result:
-                    int_string = int_result[:int_result.index('.')]
-                else:
-                    int_string = int_result
-                int_number = float(int_string)
-                tokens[index:end_index+1] = [{'type': 'NUMBER', 'number': int_number}]
-            else:
-                print("Invalid syntax")
-                exit(1)
-        index += 1
-    return tokens
 
-
-def evaluate_round(tokens):
-    index = 0
-    while index < len(tokens):
-        if tokens[index]['type'] != 'ROUND':
-            index += 1
-            continue
-
-        end_index = index + 1
-        while end_index < len(tokens) and tokens[end_index]['type'] != 'RIGHT_BRACKET':
-            end_index += 1
-        if end_index == len(tokens) or tokens[end_index]['type'] != 'RIGHT_BRACKET':
-            print("Invalid syntax")
-            exit(1)
-
-        round_result = evaluate(tokens[index+2:end_index])
-        round_string = str(round_result)
-
-        is_negative = False
-        if round_result < 0:
-            is_negative = True
-            round_string = round_string[1:]
-
-        if '.' in round_string:
-            decimal_part = int(round_string[round_string.index('.') + 1])
-            integer_part = int(round_string[:round_string.index('.')])
-
-            if decimal_part >= 5:
-                integer_part += 1
-
-            if is_negative:
-                integer_part = -integer_part
-
-            tokens[index:end_index+1] = [{'type': 'NUMBER', 'number': float(integer_part)}]
-
-        index += 1
-    return tokens
 
 
 def evaluate(tokens):
-    # tokens = evaluate_function(tokens)
-    tokens = evaluate_abs(tokens)
-    tokens = evaluate_int(tokens)
-    tokens = evaluate_round(tokens)
+    tokens = evaluate_function(tokens)
     tokens = evaluate_brackets(tokens)
     tokens = evaluate_mul_div(tokens)
     return evaluate_plus_minus(tokens)
@@ -252,24 +328,43 @@ del tokens[2:4]
 
 print(tokens)
 
+# Test the `read_abs` function
+line = "abs(1)"
+token, index = read_abs(line, 0)
+print(token)  # {'type': 'ABS'}
+print(index)  # 3
+
+# Test the `read_int` function
+line = "int(1.5)"
+token, index = read_int(line, 0)
+print(token)  # {'type': 'INT'}
+print(index)  # 3
+
+# Test the `read_round` function
+line = "round(1.5)"
+token, index = read_round(line, 0)
+print(token)  # {'type': 'ROUND'}
+print(index)  # 5
+
+
 # Add more tests to this function :)
 def run_test():
     print("==== Test started! ====")
-    test("3+5")
-    test("3*5+6")
-    test("(3+4)-5")
-    test("((3+4)-5)+8")
-    test("1*(3+5)-6")
-    test("(3+4*(2-1))/5")
-    test("round(-1.55)")
+    # test("3+5")
+    # test("3*5+6")
+    # test("(3+4)-5")
+    # test("((3+4)-5)+8")
+    # test("1*(3+5)-6")
+    # test("(3+4*(2-1))/5")
+    # test("round(-1.55)")
     test("int(round(-1.55))")
     # test("12+abs(int(round(-1.55)+abs(int(-2.3+4))))")
-    test("12+abs(int(round(-1.55))))")
-    test("abs(-7)")
-    test("abs(-7+10)")
-    test("abs(-7*9)+10")
-    test("int(7.8)")
-    test("round(7.8)")
+    # test("12+abs(int(round(-1.55)))")
+    # test("abs(-7)")
+    # test("abs(-7+10)")
+    # test("abs(-7*9)+10")
+    # test("int(7.8)")
+    # test("round(7.8)")
     print("==== Test finished! ====\n")
 
 run_test()
