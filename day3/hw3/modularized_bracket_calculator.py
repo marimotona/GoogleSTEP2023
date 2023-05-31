@@ -178,10 +178,10 @@ def evaluate_function(tokens):
                         result = round(func_result)
                     tokens[index:end_index+1] = [{'type': 'NUMBER', 'number': result}]
                 else:
-                    print("Invalid syntax: Unbalanced brackets")  
+                    print("Invalid syntax")  
                     exit(1)
             else:
-                print("Invalid syntax: Function must be followed by an opening bracket")  
+                print("Invalid syntax")  
                 exit(1)
         index += 1
     return tokens
