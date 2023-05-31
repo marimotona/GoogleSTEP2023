@@ -236,6 +236,32 @@ def evaluate_int(tokens):
 
 
 def evaluate_round(tokens):
+    index = 0
+    while index < len(tokens):
+        if tokens[index]['type'] != 'ROUND':
+            index += 1
+            continue
+
+        end_index = index + 1
+        while end_index < len(tokens) and tokens[end_index]['type'] != 'RIGHT_BRACKET':
+            end_index += 1
+        if end_index == len(tokens) or tokens[end_index]['type'] != 'RIGHT_BRACKET':
+            print("Invalid syntax")
+            exit(1)
+
+        round_result = str(evaluate(tokens[index+2:end_index]))
+
+        if '.' in round_result:
+            decimal_part = int(round_result[round_result.index('.') + 1])
+            integer_part = int(round_result[:round_result.index('.')])
+
+            if decimal_part >= 5:
+                integer_part += 1
+
+            tokens[index:end_index+1] = [{'type': 'NUMBER', 'number': float(integer_part)}]
+
+        index += 1
+    return tokens
 
 
 def evaluate(tokens):
@@ -269,17 +295,19 @@ print(tokens)
 # Add more tests to this function :)
 def run_test():
     print("==== Test started! ====")
-    # test("3+5")
-    # test("3*5+6")
-    # test("(3+4)-5")
-    # test("((3+4)-5)+8")
-    # test("1*(3+5)-6")
-    # test("(3+4*(2-1))/5")
+    test("3+5")
+    test("3*5+6")
+    test("(3+4)-5")
+    test("((3+4)-5)+8")
+    test("1*(3+5)-6")
+    test("(3+4*(2-1))/5")
     # test("12+abs(int(round(-1.55)+abs(int(-2.3+4))))")
-    # test("abs(-7)")
-    # test("abs(-7+10)")
-    # test("abs(-7*9)+10")
+    test("12+abs(int(round(-1.55))))")
+    test("abs(-7)")
+    test("abs(-7+10)")
+    test("abs(-7*9)+10")
     test("int(7.8)")
+    test("round(7.8)")
     print("==== Test finished! ====\n")
 
 run_test()
