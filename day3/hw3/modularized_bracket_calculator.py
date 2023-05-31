@@ -124,11 +124,10 @@ def evaluate_mul_div(tokens):
 def evaluate_brackets(tokens):
     bracket_tokens = []
     index = 0
-    end = 0
+    count_brackts= 0
 
     while index < len(tokens):
         if tokens[index]['type'] == 'LEFT_BRACKET':
-            count_brackts = 0
             for i in range(index, len(tokens)):
                 if tokens[i]['type'] == 'LEFT_BRACKET':
                     count_brackts += 1
@@ -137,45 +136,55 @@ def evaluate_brackets(tokens):
                     if count_brackts == 0:
                         result = evaluate(tokens[index + 1:i])
                         bracket_tokens.append({'type': 'NUMBER', 'number': result})
-                        index = i 
-                        end = i
+                        index = i
                         break
-                        # return result, index, i
         else:
             bracket_tokens.append(tokens[index])
         index += 1
+    if count_brackts != 0:
+        print("Invalid syntax: Unbalanced brackets")
+        exit(1)
+
     return bracket_tokens
 
 
-
 def evaluate_function(tokens):
-    print(tokens)
     index = 0
     while index < len(tokens):
         if tokens[index]['type'] in ['ABS', 'INT', 'ROUND']:
             func_tokens = []
             func_type = tokens[index]['type']
             end_index = index + 1
-            while end_index < len(tokens) and tokens[end_index]['type'] != 'RIGHT_BRACKET':
-                func_tokens.append(tokens[end_index])
+            bracket_count = 0
+            if end_index < len(tokens) and tokens[end_index]['type'] == 'LEFT_BRACKET': 
+                bracket_count += 1
                 end_index += 1
-                print('ここまで動いている')
-            if end_index < len(tokens) and tokens[end_index]['type'] == 'RIGHT_BRACKET':
-                func_result = evaluate(func_tokens)
-                print(func_result)
-                if func_type == 'ABS':
-                    result = abs(func_result)
-                elif func_type == 'INT':
-                    result = int(func_result)
-                else: 
-                    result = round(func_result)
-                tokens[index:end_index+1] = [{'type': 'NUMBER', 'number': result}]
+                while end_index < len(tokens):
+                    if tokens[end_index]['type'] == 'LEFT_BRACKET':
+                        bracket_count += 1
+                    elif tokens[end_index]['type'] == 'RIGHT_BRACKET':
+                        bracket_count -= 1
+                        if bracket_count == 0:
+                            break  
+                    func_tokens.append(tokens[end_index])
+                    end_index += 1
+                if end_index < len(tokens) and tokens[end_index]['type'] == 'RIGHT_BRACKET':
+                    func_result = evaluate(func_tokens)
+                    if func_type == 'ABS':
+                        result = abs(func_result)
+                    elif func_type == 'INT':
+                        result = int(func_result)
+                    else: 
+                        result = round(func_result)
+                    tokens[index:end_index+1] = [{'type': 'NUMBER', 'number': result}]
+                else:
+                    print("Invalid syntax: Unbalanced brackets")  
+                    exit(1)
             else:
-                print("Invalid syntax")
+                print("Invalid syntax: Function must be followed by an opening bracket")  
                 exit(1)
         index += 1
     return tokens
-
 
 
 
@@ -204,43 +213,27 @@ del tokens[2:4]
 
 print(tokens)
 
-# Test the `read_abs` function
-line = "abs(1)"
-token, index = read_abs(line, 0)
-print(token)  # {'type': 'ABS'}
-print(index)  # 3
-
-# Test the `read_int` function
-line = "int(1.5)"
-token, index = read_int(line, 0)
-print(token)  # {'type': 'INT'}
-print(index)  # 3
-
-# Test the `read_round` function
-line = "round(1.5)"
-token, index = read_round(line, 0)
-print(token)  # {'type': 'ROUND'}
-print(index)  # 5
 
 
 # Add more tests to this function :)
 def run_test():
     print("==== Test started! ====")
-    # test("3+5")
-    # test("3*5+6")
-    # test("(3+4)-5")
-    # test("((3+4)-5)+8")
-    # test("1*(3+5)-6")
-    # test("(3+4*(2-1))/5")
-    # test("round(-1.55)")
-    test("int(round(-1.55))")
-    # test("12+abs(int(round(-1.55)+abs(int(-2.3+4))))")
-    # test("12+abs(int(round(-1.55)))")
-    # test("abs(-7)")
-    # test("abs(-7+10)")
-    # test("abs(-7*9)+10")
-    # test("int(7.8)")
-    # test("round(7.8)")
+    test("3+5")
+    test("3*5+6")
+    test("(3+4)-5")
+    test("((3+4)-5)+8")
+    test("1*(3+5)-6")
+    test("(3+4*(2-1))/5")
+    test("round(-1.55)")
+    test("int(1.55)")
+    test("abs(round(-1.55)+int(1.55))")
+    test("12+abs(int(round(-1.55)+abs(int(-2.3+4))))")
+    test("12+abs(int(round(-1.55)))")
+    test("abs(-7)")
+    test("abs(-7+10)")
+    test("abs(-7*9)+10")
+    test("int(7.8)")
+    test("round(7.8)")
     print("==== Test finished! ====\n")
 
 run_test()
