@@ -145,56 +145,7 @@ def evaluate_brackets(tokens):
             bracket_tokens.append(tokens[index])
         index += 1
     return bracket_tokens
-    # return tokens, 0, len(tokens) - 1
-    # return bracket_tokens, index, end
 
-
-# def evaluate_function(tokens):
-#     index = 0
-#     function_tokens = []
-
-#     while index < len(tokens):
-#         if tokens[index]['type'] == 'ABS':
-#             for i in range(index, len(tokens)):
-#                 tokens = evaluate(i)
-#                 abs_number = tokens['number'] if tokens['number'] >= 0 else -tokens['number']
-#             return function_tokens.append({'type': 'NUMBER', 'number': abs_number})
-
-#         elif tokens[index]['type'] == 'INT':
-#             for i in range(index, len(tokens)):
-#                 if str(i) == '.':
-#                     int_number = tokens[:i.index('.')]
-#                 int_number = float(int_number)
-#             return function_tokens.append({'type': 'NUMBER', 'number': int_number})
-
-#         elif tokens[index]['type'] == 'ROUND':
-#             for i in range(index, len(tokens)):
-#                 if str(i) == '.':
-#                     if tokens[i + 1] >= 5:
-#                         round_number = tokens[i - 1] + 1
-#                     elif tokens[i + 1] < 5:
-#                         round_number = tokens[i - 1]
-#             return function_tokens.append({'type': 'NUMBER', 'number': round_number})
-
-# def evaluate_abs(tokens):
-#     print("evaluate_absの開始時のTokens:", tokens)
-#     index = 0
-#     while index < len(tokens):
-#         if tokens[index]['type'] == 'ABS':
-#             abs_result, start_index, end_index = evaluate_brackets(tokens[index + 1:])
-#             if abs_result is not None:
-#                 # abs_brackets = evaluate_brackets(tokens[index + 1:])
-#                 abs_number = abs_result if abs_result >= 0 else -abs_result
-#                 # tokens[index:len(tokens)- 1] = [{'type': 'NUMBER', 'number': abs_number}]
-#                 tokens[index:start_index+index+2] = [{'type': 'NUMBER', 'number': abs_number}]
-#                 tokens[start_index+index+2:end_index+index+2] = []
-#                 index += 1
-#             else:
-#                 index += 1
-#         else:
-#             index += 1
-
-#     return tokens
 
 def evaluate_abs(tokens):
     index = 0
@@ -249,14 +200,23 @@ def evaluate_round(tokens):
             print("Invalid syntax")
             exit(1)
 
-        round_result = str(evaluate(tokens[index+2:end_index]))
+        round_result = evaluate(tokens[index+2:end_index])
+        round_string = str(round_result)
 
-        if '.' in round_result:
-            decimal_part = int(round_result[round_result.index('.') + 1])
-            integer_part = int(round_result[:round_result.index('.')])
+        is_negative = False
+        if round_result < 0:
+            is_negative = True
+            round_string = round_string[1:]
+
+        if '.' in round_string:
+            decimal_part = int(round_string[round_string.index('.') + 1])
+            integer_part = int(round_string[:round_string.index('.')])
 
             if decimal_part >= 5:
                 integer_part += 1
+
+            if is_negative:
+                integer_part = -integer_part
 
             tokens[index:end_index+1] = [{'type': 'NUMBER', 'number': float(integer_part)}]
 
@@ -301,6 +261,8 @@ def run_test():
     test("((3+4)-5)+8")
     test("1*(3+5)-6")
     test("(3+4*(2-1))/5")
+    test("round(-1.55)")
+    test("int(round(-1.55))")
     # test("12+abs(int(round(-1.55)+abs(int(-2.3+4))))")
     test("12+abs(int(round(-1.55))))")
     test("abs(-7)")
