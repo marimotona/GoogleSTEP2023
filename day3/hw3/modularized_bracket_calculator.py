@@ -234,6 +234,8 @@ def run_test():
     test("abs(-7*9)+10")
     test("int(7.8)")
     test("round(7.8)")
+    test("3*(-3)")
+    test("-3*3")
     print("==== Test finished! ====\n")
 
 run_test()
