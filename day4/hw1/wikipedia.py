@@ -71,7 +71,7 @@ class Wikipedia:
         print()
 
 
-    # Find the shortest path.
+    # Find the shortest path
     # |start|: The title of the start page.
     # |goal|: The title of the goal page.
     def find_shortest_path(self, start, goal):
