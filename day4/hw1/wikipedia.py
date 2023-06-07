@@ -17,7 +17,7 @@ class Wikipedia:
         self.links = {}
 
         # Read the pages file into self.titles.
-        with open(pages_file) as file:
+        with open(pages_file, encoding='utf-8') as file:
             for line in file:
                 (id, title) = line.rstrip().split(" ")
                 id = int(id)
@@ -27,7 +27,7 @@ class Wikipedia:
         print("Finished reading %s" % pages_file)
 
         # Read the links file into self.links.
-        with open(links_file) as file:
+        with open(links_file, encoding='utf-8') as file:
             for line in file:
                 (src, dst) = line.rstrip().split(" ")
                 (src, dst) = (int(src), int(dst))
@@ -78,6 +78,37 @@ class Wikipedia:
         #------------------------#
         # Write your code here!  #
         #------------------------#
+        start_id = None
+        goal_id = None
+        for id, title in self.titles.items():
+            if title == start:
+                start_id = id
+            if title == goal:
+                goal_id = id
+
+        if start_id is None or goal_id is None:
+            print("Not Found")
+            return None
+
+        visited = set()
+        queue = collections.deque([(start_id, [])])
+
+        while queue:
+            (curr_node, path) = queue.popleft()
+            if curr_node not in visited:
+                visited.add(curr_node)
+                path = path + [curr_node]
+
+                if curr_node == goal_id:
+                    shortest_path =  [self.titles[i] for i in path]
+                    print('shortest path :')
+                    for page in shortest_path:
+                        print(page)
+                    return shortest_path
+                
+                for next_node in self.links[curr_node]:
+                    if next_node not in visited:
+                        queue.append((next_node, path))
         pass
 
 
@@ -103,7 +134,7 @@ if __name__ == "__main__":
         exit(1)
 
     wikipedia = Wikipedia(sys.argv[1], sys.argv[2])
-    wikipedia.find_longest_titles()
-    wikipedia.find_most_linked_pages()
+    # wikipedia.find_longest_titles()
+    # wikipedia.find_most_linked_pages()
     wikipedia.find_shortest_path("渋谷", "小野妹子")
     wikipedia.find_most_popular_pages()
