@@ -29,3 +29,13 @@ bracketを読み進めていく方でevaluateを呼び出しているので、<b
 
 evaluate_expression_brackets<br>
 二重括弧
+
+
+#### FB
+
+括弧をまとめて、確認出来る
+o(N)でできる、内側からみていく
+evaluate_bracketsから、みていく
+テストケースが足りない
+
+functionをまとめる
