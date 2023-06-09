@@ -1,5 +1,6 @@
 import sys
 import collections
+import heapq
 
 class Wikipedia:
 
@@ -112,6 +113,7 @@ class Wikipedia:
         pass
 
 
+
     # Calculate the page ranks and print the most popular pages.
     def find_most_popular_pages(self):
         #------------------------#
@@ -122,25 +124,36 @@ class Wikipedia:
         length = len(self.titles)
         for _ in range(100):
             # for id, score in popular.items():
-
             #     print(f'ID: {id}, popular: {score}')
             new_popular = {id: (1.0 - share_ratio) / length for id in self.titles.keys()}
-            for id in self.titles.keys():
+            # for id in self.titles.keys():
+            #     if self.links[id]:
+            #         distribute_popular = share_ratio * popular[id] / len(self.links[id])
+            #         for linked in self.links[id]:
+            #             new_popular[linked] += distribute_popular
+            #     else:
+            #         distribute_popular = popular[id] / length
+            #         for linked in new_popular.keys():
+            #             new_popular[linked] += distribute_popular
+            for id, score in popular.items():
                 if self.links[id]:
-                    distribute_popular = share_ratio * popular[id] / len(self.links[id])
-                    for linked in self.links[id]:
-                        new_popular[linked] += distribute_popular
+                    distribute = share_ratio * score / len(self.links[id])
+                    for node in self.links[id]:
+                        new_popular[node] += distribute
                 else:
-                    distribute_popular = popular[id] / length
-                    for linked in new_popular.keys():
-                        new_popular[linked] += distribute_popular
+                    distribute = score / length
+                    for node in self.titles.keys():
+                        new_popular[node] += distribute
 
             popular = new_popular
         
-        popular_score = sorted(popular.items(), reverse=True)
-        for i in range(10):
-            print(f'ID: {popular_score[i][0]}, popular: {popular_score[i][1]}')
+        # popular_score = sorted(popular.items(), reverse=True)
+        # for i in range(10):
+        #     print(f'ID: {popular_score[i][0]}, popular: {popular_score[i][1]}')
 
+        top_pages = heapq.nlargest(10, popular.items(), key=lambda x: x[1])
+        for id, score in top_pages:
+            print(f'ID: {id}, popular: {score}')
         pass
 
 
