@@ -117,6 +117,30 @@ class Wikipedia:
         #------------------------#
         # Write your code here!  #
         #------------------------#
+        popular = {id: 1.0 for id in self.titles.keys()}
+        share_ratio = 0.85
+        length = len(self.titles)
+        for _ in range(100):
+            # for id, score in popular.items():
+
+            #     print(f'ID: {id}, popular: {score}')
+            new_popular = {id: (1.0 - share_ratio) / length for id in self.titles.keys()}
+            for id in self.titles.keys():
+                if self.links[id]:
+                    distribute_popular = share_ratio * popular[id] / len(self.links[id])
+                    for linked in self.links[id]:
+                        new_popular[linked] += distribute_popular
+                else:
+                    distribute_popular = popular[id] / length
+                    for linked in new_popular.keys():
+                        new_popular[linked] += distribute_popular
+
+            popular = new_popular
+        
+        popular_score = sorted(popular.items(), reverse=True)
+        for i in range(10):
+            print(f'ID: {popular_score[i][0]}, popular: {popular_score[i][1]}')
+
         pass
 
 
@@ -136,5 +160,5 @@ if __name__ == "__main__":
     wikipedia = Wikipedia(sys.argv[1], sys.argv[2])
     # wikipedia.find_longest_titles()
     # wikipedia.find_most_linked_pages()
-    wikipedia.find_shortest_path("渋谷", "小野妹子")
+    # wikipedia.find_shortest_path("渋谷", "小野妹子")
     wikipedia.find_most_popular_pages()
