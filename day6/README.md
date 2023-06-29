@@ -34,3 +34,29 @@
 またはそれ以上であるかを確認する。</br>
 もし、best_metsdataがNULLか、現在のmetadataのサイズがこれまで見つけた最良のブロックよりも</br>
 小さい場合、best_metadataと、best_prevを更新する。</br>
+
+
+### worst_fit
+
+```c
+  my_metadata_t *metadata = my_heap.free_head;
+  my_metadata_t *prev = NULL;
+  my_metadata_t *worst_metadata = NULL;
+  my_metadata_t *worst_prev = NULL;
+
+  while(metadata) {
+        if (metadata->size >= size) {
+            if (worst_metadata == NULL || worst_metadata->size < metadata->size) {
+                worst_metadata = metadata;
+                worst_prev = prev;
+            }
+        }
+        prev = metadata;
+        metadata = metadata->next;
+    }
+
+    metadata = worst_metadata;
+    prev = worst_prev;
+```
+ブロックよりもサイズが大きいフリーメモリブロックの中で、最も大きいサイズのものを探す
+
