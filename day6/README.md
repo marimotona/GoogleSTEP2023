@@ -37,6 +37,8 @@
 
 
 ### worst_fit
+![スクリーンショット 2023-06-29 194433](https://github.com/marimotona/GoogleSTEP2023/assets/105051587/7b564583-1cc3-4a19-a8ea-9a0e8c386bc7)</br>
+すごい時間がかかっている、、、
 
 ```c
   my_metadata_t *metadata = my_heap.free_head;
