@@ -30,3 +30,7 @@
     metadata = best_metadata;
     prev = best_prev;
 ```
+フリーリストのすべてのブロックを走査し、現在のブロックが要求サイズと一致するか、</br>
+またはそれ以上であるかを確認する。</br>
+もし、best_metsdataがNULLか、現在のmetadataのサイズがこれまで見つけた最良のブロックよりも</br>
+小さい場合、best_metadataと、best_prevを更新する。</br>
