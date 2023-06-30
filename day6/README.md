@@ -73,7 +73,10 @@ typedef struct my_metadata_t {
   int bin_index;
   struct my_metadata_t *next;
 } my_metadata_t;
+```
+bin_index : フリーリスト内のブロックが所属しているbinを追跡
 
+```c
 #define NUM_BINS 5
 #define BIN_SIZE 1000  
 
@@ -81,6 +84,11 @@ typedef struct my_heap_t {
   my_metadata_t *free_head[NUM_BINS];
   my_metadata_t dummy;
 } my_heap_t;
+```
+新たなフリーリストの構造を定義</br>
+フリーリストを5つのbinに分割（1000刻み）
+
+```c
 
 void my_add_to_free_list(my_metadata_t *metadata) {
   assert(!metadata->next);
@@ -99,7 +107,11 @@ void my_remove_from_free_list(my_metadata_t *metadata, my_metadata_t *prev) {
   }
   metadata->next = NULL;
 }
+```
+フリーリストのメモリブロックの追加、削除を行う</br>
+bin_indexを計算し、追加を行い、bin_indexをもとに特定し削除を行う</br>
 
+```c
 void my_initialize() {
     for (int i = 0; i < NUM_BINS; ++i) {
         my_heap.free_head[i] = &my_heap.dummy;
@@ -107,7 +119,10 @@ void my_initialize() {
     my_heap.dummy.size = 0;
     my_heap.dummy.next = NULL;
 }
+```
+それぞれ分割した各エントリを、my_heap.dummyへのポインタで初期化を行う
 
+```c
 void *my_malloc(size_t size) {
   int start_index = size / BIN_SIZE;
   my_metadata_t *best_metadata = NULL;
@@ -161,11 +176,19 @@ void *my_malloc(size_t size) {
   }
   return ptr;
 }
+```
+sizeをもとに、フリーリスト内で検索を開始するstart_indexを定義する</br>
+start_indexから、NUM_BINSまでループを回し、適切なメモリブロックを探す</br>
+メモリブロックが見つかった場合は、ブロックを割り当て、割り当てられた開始地点を取得する</br>
+割り当てたメモリブロックの開始アドレスを返す
 
-
+```c
 void my_free(void *ptr) {
   my_metadata_t *metadata = (my_metadata_t *)ptr - 1;
   metadata->next = NULL;
   my_add_to_free_list(metadata);
 }
 ```
+既に割り当てられたメモリの解放を行う</br>
+引数として渡されたメモリブロックの先頭の直前のメタデータを取得する</br>
+解放されるメモリブロックがフリーリストに入る前に、そのnextポインタをNULLに設定する</br>
