@@ -7,6 +7,9 @@
 
 ## mallocの実装
 
+![スクリーンショット 2023-06-30 142302](https://github.com/marimotona/GoogleSTEP2023/assets/105051587/2a0fdd4e-1af1-4096-9a41-292174398092)
+
+
 ### best_fit
 ![スクリーンショット 2023-06-29 174004](https://github.com/marimotona/GoogleSTEP2023/assets/105051587/994c9483-f2bf-4bd1-8c47-c33f4597c281)
 
